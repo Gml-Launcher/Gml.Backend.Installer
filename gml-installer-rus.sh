@@ -90,7 +90,7 @@ else
 fi
 
 # Проверка и установка Docker Compose
-if ! command -v docker compose > /dev/null
+if ! command -v docker-compose > /dev/null
 then
     echo "[Docker-Compose] Docker Compose не найден. Попытка установить..."
     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
