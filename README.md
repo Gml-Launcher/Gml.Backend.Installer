@@ -23,9 +23,9 @@ curl -O  https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/ma
 ```
 
 ```
-chmod +x ./gml-installer-rus.sh
+chmod +x ./gml-installer-en.sh
 ```
 
 ```
-./gml-installer-rus.sh
+./gml-installer-en.sh
 ```
