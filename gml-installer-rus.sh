@@ -126,7 +126,7 @@ echo "Описание проекта: (нажмите Enter, чтобы исп�
 read ProjectDescription
 
 # Генерация SecretKey
-SecretKey=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 ; echo '')
+SecretKey=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '')
 
 # Запрос ProjectVersion от пользователя
 echo "Введите ProjectVersion (нажмите Enter, чтобы использовать 1.1.0):"
