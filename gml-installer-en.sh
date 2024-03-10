@@ -126,7 +126,7 @@ echo "Project description: (press Enter to use Game project $ProjectName):"
 read ProjectDescription
 
 # Generate SecretKey
-SecretKey=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 ; echo '')
+SecretKey=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '')
 
 # Ask user for ProjectVersion
 echo "Enter ProjectVersion (press Enter to use 1.1.0):"
