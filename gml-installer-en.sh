@@ -108,78 +108,22 @@ else
     echo "[Docker-Compose] Installed"
 fi
 
-# Ask user for ProjectName
-while :
-do
-    printf "Project name: "
-    read ProjectName
-    if [ -z "$ProjectName" ]
-    then
-        echo "[Error] Value cannot be empty. Please try again."
-    else
-        break
-    fi
-done
+# Download the file
+wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-compose-prod.yml
 
-# Ask user for ProjectDescription
-echo "Project description: (press Enter to use Game project $ProjectName):"
-read ProjectDescription
+# Use printf to create the .env file and ask for user input for the empty variables
+printf "API_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
+POSTGRES_USER=gmlcore\n\
+POSTGRES_PASSWORD=$(openssl rand -hex 16)\n\
+POSTGRES_DB=gmlcoredb\n\
+GLITCHTIP_DOMAIN=http://$(hostname -I | awk '{print $1}'):5007\n\
+GLITCHTIP_SECRET_KEY=$(openssl rand -hex 32)\n\
+ADMIN_EMAIL=$(read -p "Please enter the ADMIN_EMAIL: " email; echo $email)\n\
+PORT_GML_BACKEND=5000\n\
+PORT_GML_FRONTEND=5003\n\
+PORT_GML_FILES=5005\n\
+PORT_GML_SENTRY=5007\n\
+PORT_GML_SKINS=5006\n" > .env
 
-# Generate SecretKey
-SecretKey=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '')
-
-# Ask user for ProjectVersion
-echo "Enter ProjectVersion (press Enter to use 1.1.0):"
-read ProjectVersion
-ProjectVersion="${ProjectVersion:-1.1.0}"
-
-# Clone repository
-echo "Cloning repository..."
-git clone --recursive https://github.com/GamerVII-NET/Gml.Backend.git "$ProjectName"
-if [ $? -eq 0 ]
-then
-    echo "Repository cloned successfully"
-else
-    echo "[Error] Failed to clone repository. Please check your internet connection and repository availability. Also, make sure there's no $ProjectName folder in current directory"
-    exit 1
-fi
-
-# Get external IP address
-EXTERNAL_IP=$(curl -s ifconfig.me)
-
-# Change to project directory and create .env file
-cd "$ProjectName"/src/Gml.Web.Client
-
-# Create .env file
-if [ ! -f .env ]; then
-    echo "NEXT_PUBLIC_BASE_URL=http://$EXTERNAL_IP:5000" > .env
-    echo "NEXT_PUBLIC_PREFIX_API=api" >> .env
-    echo "NEXT_PUBLIC_VERSION_API=v1" >> .env
-fi
-
-# Change to $ProjectName/src/Gml.Web.Api/src/Gml.Web.Api folder
-cd "../../src/Gml.Web.Api/src/Gml.Web.Api/"
-
-# Delete appsettings.Development.json
-rm -f appsettings.Development.json
-
-# Edit appsettings.json
-if [ -f appsettings.json ]; then
-    
-    jq ".ServerSettings.ProjectName = \"$ProjectName\" |
-    .ServerSettings.ProjectDescription = \"$ProjectDescription\" |
-    .ServerSettings.SecretKey = \"$SecretKey\" |
-    .ServerSettings.PolicyName = \"${ProjectName}Policy\" |
-    .ConnectionStrings.SQLite = \"Data Source=data.db\"" appsettings.json > temp.json && mv temp.json appsettings.json
-fi
-
-docker compose up -d
-
-echo ==================================================
-echo "\e[32mProject successfully installed:\e[0m"
-echo "Admin panel: http://$EXTERNAL_IP:5003/"
-echo "             *Registration required"
-echo "File management: http://$EXTERNAL_IP:5005/"
-echo "                 Login: admin"
-echo "                 Password: admin"
-echo ==================================================
+# Run
+docker compose -f docker-compose-prod.yml up -d
