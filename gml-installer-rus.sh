@@ -125,5 +125,12 @@ PORT_GML_FILES=5005\n\
 PORT_GML_SENTRY=5007\n\
 PORT_GML_SKINS=5006\n" > .env
 
+rm -Rf ./frontend
+git clone https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Api
+
+printf "BASE_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
+PREFIX_API=api\n\
+VERSION_API=v1" > ./frontend/Gml.Web.Api/.env
+
 # Run
 docker compose -f docker-compose-prod.yml up -d
