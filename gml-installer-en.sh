@@ -118,12 +118,19 @@ POSTGRES_PASSWORD=$(openssl rand -hex 16)\n\
 POSTGRES_DB=gmlcoredb\n\
 GLITCHTIP_DOMAIN=http://$(hostname -I | awk '{print $1}'):5007\n\
 GLITCHTIP_SECRET_KEY=$(openssl rand -hex 32)\n\
-ADMIN_EMAIL=$(read -p "Please enter the ADMIN_EMAIL: " email; echo $email)\n\
+ADMIN_EMAIL=$(read -p "Admin e-mail: " email; echo $email)\n\
 PORT_GML_BACKEND=5000\n\
 PORT_GML_FRONTEND=5003\n\
 PORT_GML_FILES=5005\n\
 PORT_GML_SENTRY=5007\n\
 PORT_GML_SKINS=5006\n" > .env
+
+rm -Rf ./frontend
+git clone https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
+
+printf "NEXT_PUBLIC_BASE_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
+NEXT_PUBLIC_PREFIX_API=api\n\
+NEXT_PUBLIC_VERSION_API=v1" > ./frontend/Gml.Web.Client/.env
 
 # Run
 docker compose -f docker-compose-prod.yml up -d
