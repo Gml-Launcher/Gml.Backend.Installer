@@ -113,6 +113,12 @@ wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-co
 
 # Use printf to create the .env file and ask for user input for the empty variables
 printf "API_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
+MINIO_ROOT_USER=minioadmin\n\
+MINIO_ROOT_PASSWORD=minioadmin\n\
+MINIO_ADDRESS=:9000\n\
+MINIO_ADDRESS_PORT=9000\n\
+MINIO_CONSOLE_ADDRESS=:9001\n\
+MINIO_CONSOLE_ADDRESS_PORT=9001\n\
 POSTGRES_USER=gmlcore\n\
 POSTGRES_PASSWORD=$(openssl rand -hex 16)\n\
 POSTGRES_DB=gmlcoredb\n\
