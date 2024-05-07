@@ -113,6 +113,10 @@ wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-co
 
 # Use printf to create the .env file and ask for user input for the empty variables
 printf "API_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
+HAS_S3=false\n\
+S3_HOST=localhost:9000\n\
+S3_ACCESS_KEY=accessKey\n\
+S3_SECRET_KEY=secretKey\n\
 MINIO_ROOT_USER=minioadmin\n\
 MINIO_ROOT_PASSWORD=minioadmin\n\
 MINIO_ADDRESS=:9000\n\
