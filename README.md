@@ -10,3 +10,8 @@ curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/mas
 ```
 curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/gml-updater-rus.sh | sh
 ```
+
+Для того, что удалить Gml.Backend - необходимо прописать эту команду в вашей папке с ```docker-compose.yml``` и ```.env```
+```
+curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/gml-deleter-rus.sh | sh
+```
