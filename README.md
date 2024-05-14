@@ -5,3 +5,8 @@
 ```
 curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/gml-installer-rus.sh | sh
 ```
+
+Для того, что
+```
+curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/gml-updater-rus.sh | sh
+```
