@@ -26,5 +26,5 @@ docker rmi gml-web-frontend-image
 docker rmi quay.io/minio/minio:RELEASE.2024-05-01T01-11-10Z-cpuv1
 docker rmi filebrowser/filebrowser:v2.27.0
 
-rm ./frontend
+rm -Rf ./frontend
 rm docker-compose.yml
