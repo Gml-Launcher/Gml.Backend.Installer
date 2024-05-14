@@ -1,21 +1,17 @@
 #!/bin/sh
 
-if [ "$(id -u)" -ne 0 ]
-then
-  echo "The script needs to be run as root"
-  exit 1
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Данный скрипт нужно запускать от имени root"
+    exit 1
 fi
-
 
 #!/bin/bash
 
 # Check for git installation
-if ! command -v git > /dev/null
-then
+if ! command -v git >/dev/null; then
     echo "[Git] Git not found. Attempting to install..."
     apt-get install -y git
-    if [ $? -eq 0 ]
-    then
+    if [ $? -eq 0 ]; then
         echo "[Git] Installation successful"
     else
         echo "[Git] Failed to install Git. Please install it manually."
@@ -26,12 +22,10 @@ else
 fi
 
 # Check for jq installation
-if ! command -v jq > /dev/null
-then
+if ! command -v jq >/dev/null; then
     echo "[jq] jq not found. Attempting to install..."
     apt-get install -y jq
-    if [ $? -eq 0 ]
-    then
+    if [ $? -eq 0 ]; then
         echo "[jq] Installation successful"
     else
         echo "[jq] Failed to install jq. Please install it manually."
@@ -42,12 +36,10 @@ else
 fi
 
 # Check for curl installation
-if ! command -v curl > /dev/null
-then
+if ! command -v curl >/dev/null; then
     echo "[Curl] Curl not found. Attempting to install..."
     apt-get install -y curl
-    if [ $? -eq 0 ]
-    then
+    if [ $? -eq 0 ]; then
         echo "[Curl] Installation successful"
     else
         echo "[Curl] Failed to install Curl. Please install it manually."
@@ -58,12 +50,10 @@ else
 fi
 
 # Check for wget installation
-if ! command -v wget > /dev/null
-then
+if ! command -v wget >/dev/null; then
     echo "[Wget] Wget not found. Attempting to install..."
     apt-get install -y wget
-    if [ $? -eq 0 ]
-    then
+    if [ $? -eq 0 ]; then
         echo "[Wget] Installation successful"
     else
         echo "[Wget] Failed to install Wget. Please install it manually."
@@ -74,12 +64,10 @@ else
 fi
 
 # Check for docker.io installation
-if ! command -v docker > /dev/null
-then
+if ! command -v docker >/dev/null; then
     echo "[Docker] Docker not found. Attempting to install..."
     apt-get install -y docker.io
-    if [ $? -eq 0 ]
-    then
+    if [ $? -eq 0 ]; then
         echo "[Docker] Installation successful"
     else
         echo "[Docker] Failed to install Docker. Please install it manually."
@@ -90,15 +78,13 @@ else
 fi
 
 # Check for Docker Compose installation
-if ! command -v docker-compose > /dev/null
-then
+if ! command -v docker-compose >/dev/null; then
     echo "[Docker-Compose] Docker Compose not found. Attempting to install..."
     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
     mkdir -p $DOCKER_CONFIG/cli-plugins
     curl -SL https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
     chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
-    if [ $? -eq 0 ]
-    then
+    if [ $? -eq 0 ]; then
         echo "[Docker-Compose] Installation successful"
     else
         echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
@@ -108,39 +94,82 @@ else
     echo "[Docker-Compose] Installed"
 fi
 
-# Download the file
-wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-compose-prod.yml
+# Загрузка docker-compose.yml
+wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-compose-prod.yml -O docker-compose.yml
 
-# Use printf to create the .env file and ask for user input for the empty variables
-printf "API_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
-HAS_S3=false\n\
-S3_HOST=localhost:9000\n\
-S3_ACCESS_KEY=accessKey\n\
-S3_SECRET_KEY=secretKey\n\
-MINIO_ROOT_USER=minioadmin\n\
-MINIO_ROOT_PASSWORD=minioadmin\n\
-MINIO_ADDRESS=:9000\n\
-MINIO_ADDRESS_PORT=9000\n\
-MINIO_CONSOLE_ADDRESS=:9001\n\
-MINIO_CONSOLE_ADDRESS_PORT=9001\n\
-POSTGRES_USER=gmlcore\n\
-POSTGRES_PASSWORD=$(openssl rand -hex 16)\n\
-POSTGRES_DB=gmlcoredb\n\
-GLITCHTIP_DOMAIN=http://$(hostname -I | awk '{print $1}'):5007\n\
-GLITCHTIP_SECRET_KEY=$(openssl rand -hex 32)\n\
-ADMIN_EMAIL=$(read -p "Укажите Email-адрес администратора: " email; echo $email)\n\
-PORT_GML_BACKEND=5000\n\
-PORT_GML_FRONTEND=5003\n\
-PORT_GML_FILES=5005\n\
-PORT_GML_SENTRY=5007\n\
-PORT_GML_SKINS=5006\n" > .env
+# Настройка
 
-rm -Rf ./frontend
-git clone https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
+ip_address=$(curl -s https://ipinfo.io/ip)
+if [ $? -ne 0 ]; then
+    ip_address=$(hostname -I | awk '{print $1}')
+fi
 
-printf "NEXT_PUBLIC_BASE_URL=http://$(hostname -I | awk '{print $1}'):5000\n\
-NEXT_PUBLIC_PREFIX_API=api\n\
-NEXT_PUBLIC_VERSION_API=v1" > ./frontend/Gml.Web.Client/.env
+if [ -f .env ]; then
+    echo "[Gml] Файл .env существует. Исполизование локальной конфигурации..."
+else
+    echo "[Gml] Файл .env не найден. Производится настройка...."
+    echo "[Gml] Пожалуйста, придумайте логин для S3 хранилища Minio:"
+    read login_minio
+
+    echo "[Gml] Пожалуйста, придумайте пароль для S3 Minio"
+    read password_minio
+
+    echo "[Gml] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
+    echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000)"
+    read panel_url
+
+    if [ -z "$panel_url" ]; then
+        panel_url="http://$ip_address:5000"
+    fi
+
+    echo "[Gml] Gml.Web.Api настроена на использование HTTP/S: $panel_url"
+    # Создание файла .env и запись в него переменных
+    echo "UID=0
+GID=0
+
+S3_ENABLED=true 
+
+MINIO_ROOT_USER=$login_minio
+MINIO_ROOT_PASSWORD=$password_minio
+
+MINIO_ADDRESS=:5009
+MINIO_ADDRESS_PORT=5009
+MINIO_CONSOLE_ADDRESS=:5010
+MINIO_CONSOLE_ADDRESS_PORT=5010
+PORT_GML_BACKEND=5000
+PORT_GML_FRONTEND=5003
+PORT_GML_FILES=5005
+PORT_GML_SKINS=5006" >.env
+
+    rm -Rf ./frontend
+    git clone https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
+
+    # Создание файла .env и запись в него переменных
+    echo "NEXT_PUBLIC_BASE_URL=$panel_url
+NEXT_PUBLIC_PREFIX_API=api
+NEXT_PUBLIC_VERSION_API=v1" >./frontend/Gml.Web.Client/.env
+
+fi
 
 # Run
-docker compose -f docker-compose-prod.yml up -d
+
+docker compose up -d
+
+echo 
+echo 
+echo "\e[32m==================================================\e[0m"
+echo "\e[32mПроект успешно установлен:\e[0m"
+echo "\e[32m==================================================\e[0m"
+echo "Админпанель: http://$ip_address:5003/"
+echo "             *Небходима регистрация"
+echo "-------------------------------------------------"
+echo "Управление файлами: http://$ip_address:5005/"
+echo "                    Логин: admin"
+echo "                    Пароль: admin"
+echo "-------------------------------------------------"
+echo "S3 Minio: http://$ip_address:5010/"
+echo "                    Логин: указан в .env"
+echo "                    Пароль: указан в .env"
+echo "\033[31m=================================================="
+echo "* Настоятельно советуем, в целях вашей безопасности, сменить данные для авторизации в панелях управления"
+echo "==================================================\033[0m"
