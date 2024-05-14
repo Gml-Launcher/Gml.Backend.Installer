@@ -3,7 +3,9 @@
 Запустите скрипт установки в удобной для Вас директории ([для работы скрипта нужен curl](https://losst.pro/ustanovka-curl-v-ubuntu)):
 
 ```
-curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/gml-installer-rus.sh | sh
+curl -O  https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/gml-installer-rus.sh
+chmod +x ./gml-installer-rus.sh
+./gml-installer-rus.sh
 ```
 
 ## Обновление
