@@ -45,6 +45,6 @@ docker rmi gml-web-frontend-image
 rm -Rf ./frontend
 git clone https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
 
-echo "$content" > frontend/Gml.Web.Client/.env-test
+echo "$content" > frontend/Gml.Web.Client/.env
 
 docker compose up -d
