@@ -1,11 +1,9 @@
 #!/bin/sh
 
 if [ "$(id -u)" -ne 0 ]; then
-    echo "Данный скрипт нужно запускать от имени root"
+    echo "This script must be run as root" 
     exit 1
 fi
-
-#!/bin/bash
 
 # Check for git installation
 if ! command -v git >/dev/null; then
@@ -15,7 +13,9 @@ if ! command -v git >/dev/null; then
         echo "[Git] Installation successful"
     else
         echo "[Git] Failed to install Git. Please install it manually."
-	@@ -26,12 +22,10 @@ else
+    fi
+else
+    echo "[Git] Installed"
 fi
 
 # Check for jq installation
@@ -26,7 +26,9 @@ if ! command -v jq >/dev/null; then
         echo "[jq] Installation successful"
     else
         echo "[jq] Failed to install jq. Please install it manually."
-	@@ -42,12 +36,10 @@ else
+    fi
+else
+    echo "[jq] Installed"
 fi
 
 # Check for curl installation
@@ -37,7 +39,9 @@ if ! command -v curl >/dev/null; then
         echo "[Curl] Installation successful"
     else
         echo "[Curl] Failed to install Curl. Please install it manually."
-	@@ -58,12 +50,10 @@ else
+    fi
+else
+    echo "[Curl] Installed"
 fi
 
 # Check for wget installation
@@ -48,7 +52,9 @@ if ! command -v wget >/dev/null; then
         echo "[Wget] Installation successful"
     else
         echo "[Wget] Failed to install Wget. Please install it manually."
-	@@ -74,12 +64,10 @@ else
+    fi
+else
+    echo "[Wget] Installed"
 fi
 
 # Check for docker.io installation
@@ -59,7 +65,9 @@ if ! command -v docker >/dev/null; then
         echo "[Docker] Installation successful"
     else
         echo "[Docker] Failed to install Docker. Please install it manually."
-	@@ -90,15 +78,13 @@ else
+    fi
+else
+    echo "[Docker] Installed"
 fi
 
 # Check for Docker Compose installation
@@ -73,7 +81,8 @@ if ! command -v docker-compose >/dev/null; then
         echo "[Docker-Compose] Installation successful"
     else
         echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
-	@@ -108,39 +94,82 @@ else
+    fi
+else
     echo "[Docker-Compose] Installed"
 fi
 
