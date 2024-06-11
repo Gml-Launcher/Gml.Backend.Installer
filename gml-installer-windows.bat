@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 
 :: Проверка наличия git, docker, docker-compose
 where /q git
