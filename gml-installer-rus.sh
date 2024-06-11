@@ -1,25 +1,81 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ "$(id -u)" -ne 0 ]; then
     echo "Данный скрипт нужно запускать от имени root"
     exit 1
 fi
 
-# Check for required tools and install if necessary
-for tool in git jq curl wget docker docker-compose; do
-    if ! command -v $tool >/dev/null; then
-        echo "[$tool] $tool not found. Attempting to install..."
-        apt-get install -y $tool
-        if [ $? -eq 0 ]; then
-            echo "[$tool] Installation successful"
-        else
-            echo "[$tool] Failed to install $tool. Please install it manually."
-            exit 1
-        fi
+#!/bin/bash
+
+# Check for git installation
+if ! command -v git >/dev/null; then
+    echo "[Git] Git not found. Attempting to install..."
+    apt-get install -y git
+    if [ $? -eq 0 ]; then
+        echo "[Git] Installation successful"
     else
-        echo "[$tool] Installed"
-    fi
-done
+        echo "[Git] Failed to install Git. Please install it manually."
+	@@ -26,12 +22,10 @@ else
+fi
+
+# Check for jq installation
+if ! command -v jq >/dev/null; then
+    echo "[jq] jq not found. Attempting to install..."
+    apt-get install -y jq
+    if [ $? -eq 0 ]; then
+        echo "[jq] Installation successful"
+    else
+        echo "[jq] Failed to install jq. Please install it manually."
+	@@ -42,12 +36,10 @@ else
+fi
+
+# Check for curl installation
+if ! command -v curl >/dev/null; then
+    echo "[Curl] Curl not found. Attempting to install..."
+    apt-get install -y curl
+    if [ $? -eq 0 ]; then
+        echo "[Curl] Installation successful"
+    else
+        echo "[Curl] Failed to install Curl. Please install it manually."
+	@@ -58,12 +50,10 @@ else
+fi
+
+# Check for wget installation
+if ! command -v wget >/dev/null; then
+    echo "[Wget] Wget not found. Attempting to install..."
+    apt-get install -y wget
+    if [ $? -eq 0 ]; then
+        echo "[Wget] Installation successful"
+    else
+        echo "[Wget] Failed to install Wget. Please install it manually."
+	@@ -74,12 +64,10 @@ else
+fi
+
+# Check for docker.io installation
+if ! command -v docker >/dev/null; then
+    echo "[Docker] Docker not found. Attempting to install..."
+    apt-get install -y docker.io
+    if [ $? -eq 0 ]; then
+        echo "[Docker] Installation successful"
+    else
+        echo "[Docker] Failed to install Docker. Please install it manually."
+	@@ -90,15 +78,13 @@ else
+fi
+
+# Check for Docker Compose installation
+if ! command -v docker-compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose not found. Attempting to install..."
+    DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+    mkdir -p $DOCKER_CONFIG/cli-plugins
+    curl -SL https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+    chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+    if [ $? -eq 0 ]; then
+        echo "[Docker-Compose] Installation successful"
+    else
+        echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
+	@@ -108,39 +94,82 @@ else
+    echo "[Docker-Compose] Installed"
+fi
 
 # Загрузка docker-compose.yml
 wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-compose-prod.yml -O docker-compose.yml
