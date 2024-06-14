@@ -13,7 +13,7 @@ if ! command -v docker >/dev/null; then
 fi
 
 if [ -f .env ]; then
-    echo "[Gml] Проверка .evn - \e[32mУспешно\e[0m"
+    echo "[Gml] Проверка .env - \e[32mУспешно\e[0m"
 else
     echo "[Gml] Файл .env отсутствует"
     exit 1
