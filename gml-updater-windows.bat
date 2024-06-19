@@ -36,8 +36,8 @@ if exist frontend\Gml.Web.Client\.env (
 
 docker compose down
 
-docker rmi ghcr.io/gamervii-net/gml.web.skin.service:master
-docker rmi ghcr.io/gamervii-net/gml.web.api:master
+docker rmi ghcr.io/gml-launcher/gml.web.skin.service:master
+docker rmi ghcr.io/gml-launcher/gml.web.api:master
 docker rmi gml-web-frontend-image
 
 rd /s /q frontend
