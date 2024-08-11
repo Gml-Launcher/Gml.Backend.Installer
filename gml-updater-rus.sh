@@ -43,7 +43,7 @@ docker rmi ghcr.io/gml-launcher/gml.web.api:master
 docker rmi gml-web-frontend-image
 
 rm -Rf ./frontend
-git clone --branch v0.1.0-beta2 --single-branch https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
+git clone --single-branch https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
 
 echo "$content" > frontend/Gml.Web.Client/.env
 
