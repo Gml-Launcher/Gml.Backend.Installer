@@ -75,7 +75,7 @@ IF EXIST .env (
     ) > .env
 
     del /Q /F frontend >NUL 2>NUL
-    git clone https://github.com/Scondic/Gml.Web.Client.git frontend/Gml.Web.Client
+    git clone https://github.com/Gml-Launcher/Gml.Web.Client.git frontend/Gml.Web.Client
 
     (
         echo NEXT_PUBLIC_BASE_URL=!panel_url!

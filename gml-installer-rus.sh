@@ -151,7 +151,7 @@ PORT_GML_FILES=5005
 PORT_GML_SKINS=5006" > .env
 
     rm -Rf ./frontend
-    git clone --single-branch https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
+    git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./frontend/Gml.Web.Client
 
     # Создание файла .env и запись в него переменных
     echo "NEXT_PUBLIC_BASE_URL=$panel_url

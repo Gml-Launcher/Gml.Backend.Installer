@@ -41,7 +41,7 @@ docker rmi ghcr.io/gml-launcher/gml.web.api:master
 docker rmi gml-web-frontend-image
 
 rd /s /q frontend
-git clone https://github.com/Scondic/Gml.Web.Client.git frontend\Gml.Web.Client
+git clone https://github.com/Gml-Launcher/Gml.Web.Client.git frontend\Gml.Web.Client
 
 rem Write the 'content' variable into 'Gml.Web.Client.env'
 if exist temp.txt (
