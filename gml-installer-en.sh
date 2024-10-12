@@ -133,7 +133,8 @@ PORT_GML_BACKEND=5000\n\
 PORT_GML_FRONTEND=5003\n\
 PORT_GML_FILES=5005\n\
 PORT_GML_SENTRY=5007\n\
-PORT_GML_SKINS=5006\n" > .env
+PORT_GML_SKINS=5006\n
+SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085" > .env
 
 rm -Rf ./frontend
 git clone https://github.com/Scondic/Gml.Web.Client.git ./frontend/Gml.Web.Client
