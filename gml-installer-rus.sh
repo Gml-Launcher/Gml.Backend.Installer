@@ -148,7 +148,9 @@ MINIO_CONSOLE_ADDRESS_PORT=5010
 PORT_GML_BACKEND=5000
 PORT_GML_FRONTEND=5003
 PORT_GML_FILES=5005
-PORT_GML_SKINS=5006" > .env
+PORT_GML_SKINS=5006
+
+SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085" > .env
 
     rm -Rf ./frontend
     git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./frontend/Gml.Web.Client
