@@ -72,6 +72,8 @@ IF EXIST .env (
         echo PORT_GML_FRONTEND=5003
         echo PORT_GML_FILES=5005
         echo PORT_GML_SKINS=5006
+        echo SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085
+
     ) > .env
 
     del /Q /F frontend >NUL 2>NUL
