@@ -80,9 +80,7 @@ IF EXIST .env (
     git clone https://github.com/Gml-Launcher/Gml.Web.Client.git frontend/Gml.Web.Client
 
     (
-        echo NEXT_PUBLIC_BASE_URL=!panel_url!
-        echo NEXT_PUBLIC_PREFIX_API=api
-        echo NEXT_PUBLIC_VERSION_API=v1
+        echo NEXT_PUBLIC_BACKEND_URL=!panel_url!/api/v1
     ) > frontend/Gml.Web.Client/.env
 )
 
