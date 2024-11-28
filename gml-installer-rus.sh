@@ -156,9 +156,7 @@ SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085" > .env
     git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./frontend/Gml.Web.Client
 
     # Создание файла .env и запись в него переменных
-    echo "NEXT_PUBLIC_BASE_URL=$panel_url
-NEXT_PUBLIC_PREFIX_API=api
-NEXT_PUBLIC_VERSION_API=v1" > ./frontend/Gml.Web.Client/.env
+    echo "NEXT_PUBLIC_BACKEND_URL=$panel_url/api/v1" > ./frontend/Gml.Web.Client/.env
 
 fi
 
