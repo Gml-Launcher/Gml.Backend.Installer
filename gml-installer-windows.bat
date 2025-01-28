@@ -40,8 +40,6 @@ IF EXIST .env (
     for /f "delims=" %%i in ('powershell -Command "[guid]::NewGuid().ToString()"') do set "security_key=%%i"
 
     set /p project_name="[Gml] Введите имя проекта: "
-    set /p login_minio="[Gml] Введите имя пользователя для хранилища S3 Minio: "
-    set /p password_minio="[Gml] Введите пароль для S3 Minio (минимум 32 символа): "
     
     set /p panel_url="[Gml] Введите адрес панели управления Gml, порт обязателен, если не используется проксирование (По умолчанию: http://localhost:5000): "
     if "%panel_url%"=="" (
@@ -61,13 +59,7 @@ IF EXIST .env (
         echo PROJECT_DESCRIPTION=
         echo PROJECT_POLICYNAME=!project_policyname!
         echo PROJECT_PATH=
-        echo S3_ENABLED=true
-        echo MINIO_ROOT_USER=!login_minio!
-        echo MINIO_ROOT_PASSWORD=!password_minio!
-        echo MINIO_ADDRESS=:5009
-        echo MINIO_ADDRESS_PORT=5009
-        echo MINIO_CONSOLE_ADDRESS=:5010
-        echo MINIO_CONSOLE_ADDRESS_PORT=5010
+        echo S3_ENABLED=false
         echo PORT_GML_BACKEND=5000
         echo PORT_GML_FRONTEND=5003
         echo PORT_GML_FILES=5005
