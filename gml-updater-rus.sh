@@ -33,10 +33,18 @@ else
     exit 1
 fi
 
+if command -v docker-compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose v1 is installed"
+    DOCKER_COMPOSE_CMD="docker-compose"
+elif command -v docker compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose v2 is installed"
+    DOCKER_COMPOSE_CMD="docker compose"
+fi
+
 # Read the content of the file into a variable
 content=$(cat ./frontend/Gml.Web.Client/.env)
 
-docker compose down
+DOCKER_COMPOSE_CMD down
 
 docker rmi ghcr.io/gml-launcher/gml.web.skin.service:master
 docker rmi ghcr.io/gml-launcher/gml.web.api:master
@@ -47,4 +55,4 @@ git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./f
 
 echo "$content" > frontend/Gml.Web.Client/.env
 
-docker compose up -d
+DOCKER_COMPOSE_CMD up -d
