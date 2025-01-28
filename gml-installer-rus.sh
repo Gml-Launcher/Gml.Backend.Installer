@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if ! command -v apt-get >/dev/null; then
+    echo "This script is only for Debian-based systems"
+    exit 1
+fi
+
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root" 
     exit 1
@@ -8,7 +13,19 @@ fi
 # Check for git installation
 if ! command -v git >/dev/null; then
     echo "[Git] Git not found. Attempting to install..."
-    apt-get install -y git
+
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y git
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm git
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y git
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y git
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Git] Installation successful"
     else
@@ -21,7 +38,18 @@ fi
 # Check for jq installation
 if ! command -v jq >/dev/null; then
     echo "[jq] jq not found. Attempting to install..."
-    apt-get install -y jq
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y jq
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm jq
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y jq
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y jq
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[jq] Installation successful"
     else
@@ -34,7 +62,18 @@ fi
 # Check for curl installation
 if ! command -v curl >/dev/null; then
     echo "[Curl] Curl not found. Attempting to install..."
-    apt-get install -y curl
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y curl
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm curl
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y curl
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y curl
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Curl] Installation successful"
     else
@@ -47,7 +86,18 @@ fi
 # Check for wget installation
 if ! command -v wget >/dev/null; then
     echo "[Wget] Wget not found. Attempting to install..."
-    apt-get install -y wget
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y wget
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm wget
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y wget
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y wget
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Wget] Installation successful"
     else
@@ -60,7 +110,18 @@ fi
 # Check for docker.io installation
 if ! command -v docker >/dev/null; then
     echo "[Docker] Docker not found. Attempting to install..."
-    apt-get install -y docker.io
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y docker.io
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm docker
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y docker
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y docker
+    else
+        echo "[Docker] Failed to install Docker. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Docker] Installation successful"
     else
