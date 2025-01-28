@@ -44,7 +44,7 @@ fi
 # Read the content of the file into a variable
 content=$(cat ./frontend/Gml.Web.Client/.env)
 
-DOCKER_COMPOSE_CMD down
+$DOCKER_COMPOSE_CMD down
 
 docker rmi ghcr.io/gml-launcher/gml.web.skin.service:master
 docker rmi ghcr.io/gml-launcher/gml.web.api:master
