@@ -126,8 +126,14 @@ else
     echo "[Docker] Installed"
 fi
 
-# Check for Docker Compose installation
-if ! command -v docker-compose >/dev/null; then
+# Check for Docker Compose v2 or v1
+if command -v docker-compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose v1 is installed"
+    DOCKER_COMPOSE_CMD="docker-compose"
+elif command -v docker compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose v2 is installed"
+    DOCKER_COMPOSE_CMD="docker compose"
+else
     echo "[Docker-Compose] Docker Compose not found. Attempting to install..."
     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
     mkdir -p $DOCKER_CONFIG/cli-plugins
@@ -135,11 +141,10 @@ if ! command -v docker-compose >/dev/null; then
     chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
     if [ $? -eq 0 ]; then
         echo "[Docker-Compose] Installation successful"
+        DOCKER_COMPOSE_CMD="docker compose"
     else
         echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
     fi
-else
-    echo "[Docker-Compose] Installed"
 fi
 
 # Загрузка docker-compose.yml
@@ -162,12 +167,6 @@ else
     
     echo "[Gml] Пожалуйста, введите наименование проекта:"
     read project_name
-
-    echo "[Gml] Пожалуйста, придумайте логин для S3 хранилища Minio:"
-    read login_minio
-
-    echo "[Gml] Пожалуйста, придумайте пароль для S3 Minio"
-    read password_minio
 
     echo "[Gml] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
     echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000)"
@@ -192,15 +191,8 @@ PROJECT_DESCRIPTION=
 PROJECT_POLICYNAME=$project_policyname
 PROJECT_PATH=
 
-S3_ENABLED=true
+S3_ENABLED=false
 
-MINIO_ROOT_USER=$login_minio
-MINIO_ROOT_PASSWORD=$password_minio
-
-MINIO_ADDRESS=:5009
-MINIO_ADDRESS_PORT=5009
-MINIO_CONSOLE_ADDRESS=:5010
-MINIO_CONSOLE_ADDRESS_PORT=5010
 PORT_GML_BACKEND=5000
 PORT_GML_FRONTEND=5003
 PORT_GML_FILES=5005
@@ -218,7 +210,7 @@ fi
 
 # Run
 
-docker compose up -d
+DOCKER_COMPOSE_CMD up -d
 
 echo 
 echo 
