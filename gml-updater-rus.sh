@@ -55,4 +55,4 @@ git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./f
 
 echo "$content" > frontend/Gml.Web.Client/.env
 
-$DOCKER_COMPOSE_CMD up -d
+$DOCKER_COMPOSE_CMD up -d --build

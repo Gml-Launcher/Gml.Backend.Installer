@@ -210,7 +210,7 @@ fi
 
 # Run
 
-$DOCKER_COMPOSE_CMD up -d
+$DOCKER_COMPOSE_CMD up -d --build
 
 echo 
 echo 
