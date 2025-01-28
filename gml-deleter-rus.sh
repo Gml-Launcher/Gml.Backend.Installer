@@ -23,7 +23,6 @@ docker compose down
 docker rmi ghcr.io/gml-launcher/gml.web.skin.service:master
 docker rmi ghcr.io/gml-launcher/gml.web.api:master
 docker rmi gml-web-frontend-image
-docker rmi quay.io/minio/minio:RELEASE.2024-05-01T01-11-10Z-cpuv1
 
 rm -Rf ./frontend
 rm docker-compose.yml
