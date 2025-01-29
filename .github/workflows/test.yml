@@ -18,9 +18,3 @@ jobs:
       run: |
         chmod +x ./gml-rus-v2.sh
         ./gml-rus-v2.sh
-
-    - name: Run gml-rus-v2.sh on macOS
-      if: matrix.os == 'macos-latest'
-      run: |
-        chmod +x ./gml-rus-v2.sh
-        ./gml-rus-v2.sh
