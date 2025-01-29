@@ -1,0 +1,26 @@
+name: Test gml-rus-v2.sh
+
+on: [push, pull_request]
+
+jobs:
+  test-script:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [,ubuntu-latest, macos-latest]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run gml-rus-v2.sh on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        chmod +x ./gml-rus-v2.sh
+        ./gml-rus-v2.sh
+
+    - name: Run gml-rus-v2.sh on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        chmod +x ./gml-rus-v2.sh
+        ./gml-rus-v2.sh
