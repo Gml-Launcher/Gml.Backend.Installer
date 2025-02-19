@@ -164,9 +164,20 @@ else
 
     # Generate SECURITY_KEY
     security_key=$(openssl rand -hex 32)
+    valid_project_name_regex="^[a-zA-Z_][a-zA-Z0-9_]*$"
     
     echo "[Gml] Пожалуйста, введите наименование проекта:"
-    read project_name
+    while true; do
+        read project_name
+        if echo "$project_name" | grep -Eq "$valid_project_name_regex"; then
+            break
+        else
+            echo "[Gml] Ошибка: Имя проекта должно начинаться с буквы или символа '_', и содержать только буквы, цифры или '_'. Пожалуйста, попробуйте еще раз:"
+        fi
+    done
+
+    echo "[Gml] Корректное имя проекта получено: $project_name"
+
 
     echo "[Gml] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
     echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000)"
