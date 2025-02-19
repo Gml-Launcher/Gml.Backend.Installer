@@ -8,7 +8,19 @@ fi
 # Check for git installation
 if ! command -v git >/dev/null; then
     echo "[Git] Git not found. Attempting to install..."
-    apt-get install -y git
+
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y git
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm git
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y git
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y git
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Git] Installation successful"
     else
@@ -21,7 +33,18 @@ fi
 # Check for jq installation
 if ! command -v jq >/dev/null; then
     echo "[jq] jq not found. Attempting to install..."
-    apt-get install -y jq
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y jq
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm jq
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y jq
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y jq
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[jq] Installation successful"
     else
@@ -34,7 +57,18 @@ fi
 # Check for curl installation
 if ! command -v curl >/dev/null; then
     echo "[Curl] Curl not found. Attempting to install..."
-    apt-get install -y curl
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y curl
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm curl
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y curl
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y curl
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Curl] Installation successful"
     else
@@ -47,7 +81,18 @@ fi
 # Check for wget installation
 if ! command -v wget >/dev/null; then
     echo "[Wget] Wget not found. Attempting to install..."
-    apt-get install -y wget
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y wget
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm wget
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y wget
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y wget
+    else
+        echo "[Git] Failed to install Git. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Wget] Installation successful"
     else
@@ -60,7 +105,18 @@ fi
 # Check for docker.io installation
 if ! command -v docker >/dev/null; then
     echo "[Docker] Docker not found. Attempting to install..."
-    apt-get install -y docker.io
+    if ! command -v apt-get >/dev/null; then
+        apt-get install -y docker.io
+    elif ! command -v pacman >/dev/null; then
+        pacman -S --noconfirm docker
+    elif ! command -v dnf >/dev/null; then
+        dnf install -y docker
+    elif ! command -v zypper >/dev/null; then
+        zypper install -y docker
+    else
+        echo "[Docker] Failed to install Docker. Please install it manually."
+        exit 1
+    fi
     if [ $? -eq 0 ]; then
         echo "[Docker] Installation successful"
     else
@@ -70,8 +126,14 @@ else
     echo "[Docker] Installed"
 fi
 
-# Check for Docker Compose installation
-if ! command -v docker-compose >/dev/null; then
+# Check for Docker Compose v2 or v1
+if command -v docker-compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose v1 is installed"
+    DOCKER_COMPOSE_CMD="docker-compose"
+elif command -v docker compose >/dev/null; then
+    echo "[Docker-Compose] Docker Compose v2 is installed"
+    DOCKER_COMPOSE_CMD="docker compose"
+else
     echo "[Docker-Compose] Docker Compose not found. Attempting to install..."
     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
     mkdir -p $DOCKER_CONFIG/cli-plugins
@@ -79,11 +141,10 @@ if ! command -v docker-compose >/dev/null; then
     chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
     if [ $? -eq 0 ]; then
         echo "[Docker-Compose] Installation successful"
+        DOCKER_COMPOSE_CMD="docker compose"
     else
         echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
     fi
-else
-    echo "[Docker-Compose] Installed"
 fi
 
 # Загрузка docker-compose.yml
@@ -103,18 +164,23 @@ else
 
     # Generate SECURITY_KEY
     security_key=$(openssl rand -hex 32)
+    valid_project_name_regex="^[a-zA-Z_][a-zA-Z0-9_]*$"
     
     echo "[Gml] Пожалуйста, введите наименование проекта:"
-    read project_name
+    while true; do
+        read project_name
+        if echo "$project_name" | grep -Eq "$valid_project_name_regex"; then
+            break
+        else
+            echo "[Gml] Ошибка: Имя проекта должно начинаться с буквы или символа '_', и содержать только буквы, цифры или '_'. Пожалуйста, попробуйте еще раз:"
+        fi
+    done
 
-    echo "[Gml] Пожалуйста, придумайте логин для S3 хранилища Minio:"
-    read login_minio
+    echo "[Gml] Корректное имя проекта получено: $project_name"
 
-    echo "[Gml] Пожалуйста, придумайте пароль для S3 Minio"
-    read password_minio
 
     echo "[Gml] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
-    echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000)"
+    echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000), нажмите ENTER, чтобы установить его"
     read panel_url
 
     if [ -z "$panel_url" ]; then
@@ -136,15 +202,8 @@ PROJECT_DESCRIPTION=
 PROJECT_POLICYNAME=$project_policyname
 PROJECT_PATH=
 
-S3_ENABLED=true
+S3_ENABLED=false
 
-MINIO_ROOT_USER=$login_minio
-MINIO_ROOT_PASSWORD=$password_minio
-
-MINIO_ADDRESS=:5009
-MINIO_ADDRESS_PORT=5009
-MINIO_CONSOLE_ADDRESS=:5010
-MINIO_CONSOLE_ADDRESS_PORT=5010
 PORT_GML_BACKEND=5000
 PORT_GML_FRONTEND=5003
 PORT_GML_FILES=5005
@@ -162,7 +221,7 @@ fi
 
 # Run
 
-docker compose up -d
+$DOCKER_COMPOSE_CMD up -d --build
 
 echo 
 echo 
@@ -171,10 +230,6 @@ echo "\e[32mПроект успешно установлен:\e[0m"
 echo "\e[32m==================================================\e[0m"
 echo "Админпанель: http://$ip_address:5003/"
 echo "             *Небходима регистрация"
-echo "-------------------------------------------------"
-echo "S3 Minio: http://$ip_address:5010/"
-echo "                    Логин: указан в .env"
-echo "                    Пароль: указан в .env"
 echo "\033[31m=================================================="
 echo "* Настоятельно советуем, в целях вашей безопасности, сменить данные для авторизации в панелях управления"
 echo "==================================================\033[0m"

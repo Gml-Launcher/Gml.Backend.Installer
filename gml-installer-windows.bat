@@ -39,11 +39,9 @@ IF EXIST .env (
     :: Генерация SECURITY_KEY
     for /f "delims=" %%i in ('powershell -Command "[guid]::NewGuid().ToString()"') do set "security_key=%%i"
 
-    set /p project_name="[Gml] Введите имя проекта: "
-    set /p login_minio="[Gml] Введите имя пользователя для хранилища S3 Minio: "
-    set /p password_minio="[Gml] Введите пароль для S3 Minio (минимум 32 символа): "
+    set /p project_name="[Gml] Введите имя проекта только на английском, без пробелов: "
     
-    set /p panel_url="[Gml] Введите адрес панели управления Gml, порт обязателен, если не используется проксирование (По умолчанию: http://localhost:5000): "
+    set /p panel_url="[Gml] Введите адрес панели управления Gml, порт обязателен, если не используется проксирование (По умолчанию: http://localhost:5000). Нажмите Enter, чтобы установить его."
     if "%panel_url%"=="" (
         set panel_url=http://localhost:5000
     )
@@ -61,13 +59,7 @@ IF EXIST .env (
         echo PROJECT_DESCRIPTION=
         echo PROJECT_POLICYNAME=!project_policyname!
         echo PROJECT_PATH=
-        echo S3_ENABLED=true
-        echo MINIO_ROOT_USER=!login_minio!
-        echo MINIO_ROOT_PASSWORD=!password_minio!
-        echo MINIO_ADDRESS=:5009
-        echo MINIO_ADDRESS_PORT=5009
-        echo MINIO_CONSOLE_ADDRESS=:5010
-        echo MINIO_CONSOLE_ADDRESS_PORT=5010
+        echo S3_ENABLED=false
         echo PORT_GML_BACKEND=5000
         echo PORT_GML_FRONTEND=5003
         echo PORT_GML_FILES=5005
@@ -94,10 +86,6 @@ echo Проект успешно установлен:
 echo ==================================================
 echo Админпанель: http://localhost:5003/
 echo              *Необходима регистрация
-echo --------------------------------------------------
-echo S3 Minio: http://localhost:5010/
-echo                     Логин: указан в .env
-echo                     Пароль: указан в .env
 echo ==================================================
 echo * Настоятельно советуем, в целях вашей безопасности, сменить данные для авторизации в панелях управления
 echo ==================================================
