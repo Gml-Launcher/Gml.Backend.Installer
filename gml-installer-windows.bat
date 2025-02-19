@@ -39,9 +39,9 @@ IF EXIST .env (
     :: Генерация SECURITY_KEY
     for /f "delims=" %%i in ('powershell -Command "[guid]::NewGuid().ToString()"') do set "security_key=%%i"
 
-    set /p project_name="[Gml] Введите имя проекта: "
+    set /p project_name="[Gml] Введите имя проекта только на английском, без пробелов: "
     
-    set /p panel_url="[Gml] Введите адрес панели управления Gml, порт обязателен, если не используется проксирование (По умолчанию: http://localhost:5000): "
+    set /p panel_url="[Gml] Введите адрес панели управления Gml, порт обязателен, если не используется проксирование (По умолчанию: http://localhost:5000). Нажмите Enter, чтобы установить его."
     if "%panel_url%"=="" (
         set panel_url=http://localhost:5000
     )
