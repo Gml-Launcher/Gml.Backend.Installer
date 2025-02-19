@@ -180,7 +180,7 @@ else
 
 
     echo "[Gml] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
-    echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000)"
+    echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000), нажмите ENTER, чтобы установить его"
     read panel_url
 
     if [ -z "$panel_url" ]; then
