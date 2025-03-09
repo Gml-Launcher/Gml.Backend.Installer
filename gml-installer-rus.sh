@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if [ "$(id -u)" -ne 0 ]; then
-    echo "This script must be run as root" 
+    echo "Этот скрипт должен быть запущен от имени root"
     exit 1
 fi
 
-# Check for git installation
+# Проверка установки Git
 if ! command -v git >/dev/null; then
-    echo "[Git] Git not found. Attempting to install..."
+    echo "[Git] Git не найден. Пытаюсь установить..."
 
     if ! command -v apt-get >/dev/null; then
         apt-get install -y git
@@ -18,21 +18,21 @@ if ! command -v git >/dev/null; then
     elif ! command -v zypper >/dev/null; then
         zypper install -y git
     else
-        echo "[Git] Failed to install Git. Please install it manually."
+        echo "[Git] Не удалось установить Git. Установите его вручную."
         exit 1
     fi
     if [ $? -eq 0 ]; then
-        echo "[Git] Installation successful"
+        echo "[Git] Установка успешна"
     else
-        echo "[Git] Failed to install Git. Please install it manually."
+        echo "[Git] Не удалось установить Git. Установите его вручную."
     fi
 else
-    echo "[Git] Installed"
+    echo "[Git] Уже установлен"
 fi
 
-# Check for jq installation
+# Проверка установки jq
 if ! command -v jq >/dev/null; then
-    echo "[jq] jq not found. Attempting to install..."
+    echo "[jq] jq не найден. Пытаюсь установить..."
     if ! command -v apt-get >/dev/null; then
         apt-get install -y jq
     elif ! command -v pacman >/dev/null; then
@@ -42,21 +42,21 @@ if ! command -v jq >/dev/null; then
     elif ! command -v zypper >/dev/null; then
         zypper install -y jq
     else
-        echo "[Git] Failed to install Git. Please install it manually."
+        echo "[jq] Не удалось установить jq. Установите его вручную."
         exit 1
     fi
     if [ $? -eq 0 ]; then
-        echo "[jq] Installation successful"
+        echo "[jq] Установка успешна"
     else
-        echo "[jq] Failed to install jq. Please install it manually."
+        echo "[jq] Не удалось установить jq. Установите его вручную."
     fi
 else
-    echo "[jq] Installed"
+    echo "[jq] Уже установлен"
 fi
 
-# Check for curl installation
+# Проверка установки curl
 if ! command -v curl >/dev/null; then
-    echo "[Curl] Curl not found. Attempting to install..."
+    echo "[Curl] Curl не найден. Пытаюсь установить..."
     if ! command -v apt-get >/dev/null; then
         apt-get install -y curl
     elif ! command -v pacman >/dev/null; then
@@ -66,21 +66,21 @@ if ! command -v curl >/dev/null; then
     elif ! command -v zypper >/dev/null; then
         zypper install -y curl
     else
-        echo "[Git] Failed to install Git. Please install it manually."
+        echo "[Curl] Не удалось установить Curl. Установите его вручную."
         exit 1
     fi
     if [ $? -eq 0 ]; then
-        echo "[Curl] Installation successful"
+        echo "[Curl] Установка успешна"
     else
-        echo "[Curl] Failed to install Curl. Please install it manually."
+        echo "[Curl] Не удалось установить Curl. Установите его вручную."
     fi
 else
-    echo "[Curl] Installed"
+    echo "[Curl] Уже установлен"
 fi
 
-# Check for wget installation
+# Проверка установки wget
 if ! command -v wget >/dev/null; then
-    echo "[Wget] Wget not found. Attempting to install..."
+    echo "[Wget] Wget не найден. Пытаюсь установить..."
     if ! command -v apt-get >/dev/null; then
         apt-get install -y wget
     elif ! command -v pacman >/dev/null; then
@@ -90,21 +90,21 @@ if ! command -v wget >/dev/null; then
     elif ! command -v zypper >/dev/null; then
         zypper install -y wget
     else
-        echo "[Git] Failed to install Git. Please install it manually."
+        echo "[Wget] Не удалось установить Wget. Установите его вручную."
         exit 1
     fi
     if [ $? -eq 0 ]; then
-        echo "[Wget] Installation successful"
+        echo "[Wget] Установка успешна"
     else
-        echo "[Wget] Failed to install Wget. Please install it manually."
+        echo "[Wget] Не удалось установить Wget. Установите его вручную."
     fi
 else
-    echo "[Wget] Installed"
+    echo "[Wget] Уже установлен"
 fi
 
-# Check for docker.io installation
+# Проверка установки Docker
 if ! command -v docker >/dev/null; then
-    echo "[Docker] Docker not found. Attempting to install..."
+    echo "[Docker] Docker не найден. Пытаюсь установить..."
     if ! command -v apt-get >/dev/null; then
         apt-get install -y docker.io
     elif ! command -v pacman >/dev/null; then
@@ -114,36 +114,36 @@ if ! command -v docker >/dev/null; then
     elif ! command -v zypper >/dev/null; then
         zypper install -y docker
     else
-        echo "[Docker] Failed to install Docker. Please install it manually."
+        echo "[Docker] Не удалось установить Docker. Установите его вручную."
         exit 1
     fi
     if [ $? -eq 0 ]; then
-        echo "[Docker] Installation successful"
+        echo "[Docker] Установка успешна"
     else
-        echo "[Docker] Failed to install Docker. Please install it manually."
+        echo "[Docker] Не удалось установить Docker. Установите его вручную."
     fi
 else
-    echo "[Docker] Installed"
+    echo "[Docker] Уже установлен"
 fi
 
-# Check for Docker Compose v2 or v1
+# Проверка установки Docker Compose
 if command -v docker-compose >/dev/null; then
-    echo "[Docker-Compose] Docker Compose v1 is installed"
+    echo "[Docker-Compose] Установлена версия Docker Compose v1"
     DOCKER_COMPOSE_CMD="docker-compose"
 elif command -v docker compose >/dev/null; then
-    echo "[Docker-Compose] Docker Compose v2 is installed"
+    echo "[Docker-Compose] Установлена версия Docker Compose v2"
     DOCKER_COMPOSE_CMD="docker compose"
 else
-    echo "[Docker-Compose] Docker Compose not found. Attempting to install..."
+    echo "[Docker-Compose] Docker Compose не найден. Пытаюсь установить..."
     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
     mkdir -p $DOCKER_CONFIG/cli-plugins
     curl -SL https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
     chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
     if [ $? -eq 0 ]; then
-        echo "[Docker-Compose] Installation successful"
+        echo "[Docker-Compose] Установка успешна"
         DOCKER_COMPOSE_CMD="docker compose"
     else
-        echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
+        echo "[Docker-Compose] Не удалось установить Docker Compose. Установите его вручную."
     fi
 fi
 
