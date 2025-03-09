@@ -127,10 +127,10 @@ else
 fi
 
 # Проверка установки Docker Compose
-if command -v docker-compose >/dev/null; then
+if docker-compose >/dev/null 2>&1; then
     echo "[Docker-Compose] Установлена версия Docker Compose v1"
     DOCKER_COMPOSE_CMD="docker-compose"
-elif command -v docker compose >/dev/null; then
+elif docker compose >/dev/null 2>&1; then
     echo "[Docker-Compose] Установлена версия Docker Compose v2"
     DOCKER_COMPOSE_CMD="docker compose"
 else
