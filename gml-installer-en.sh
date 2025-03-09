@@ -127,10 +127,10 @@ else
 fi
 
 # Check for Docker Compose v2 or v1
-if command -v docker-compose >/dev/null; then
+if docker-compose >/dev/null 2>&1; then
     echo "[Docker-Compose] Docker Compose v1 is installed"
     DOCKER_COMPOSE_CMD="docker-compose"
-elif command -v docker compose >/dev/null; then
+elif docker compose >/dev/null 2>&1; then
     echo "[Docker-Compose] Docker Compose v2 is installed"
     DOCKER_COMPOSE_CMD="docker compose"
 else
