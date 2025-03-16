@@ -5,189 +5,252 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-# Check for git installation
+# Функция для отображения спиннера
+show_spinner() {
+    local pid=$1
+    local text=$2
+    local spinstr='/-\|'
+    
+    while kill -0 $pid 2>/dev/null; do
+        local temp=${spinstr#?}
+        printf "\r%s %c" "$text" "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep 0.1
+    done
+    
+    wait $pid
+    local result=$?
+    
+    if [ $result -eq 0 ]; then
+        printf "\r%s \033[32m✓\033[0m\n" "$text"
+    else
+        printf "\r%s \033[31m✗\033[0m\n" "$text"
+    fi
+    
+    return $result
+}
+
+# Общее количество шагов установки
+TOTAL_STEPS=8
+CURRENT_STEP=0
+PROGRESS_WIDTH=30
+
+echo "[System] Начало установки GML..."
+echo "[System] Подготовка системы..."
+
+# Отключение интерактивных запросов на перезапуск сервисов
+if [ -f /etc/needrestart/needrestart.conf ]; then
+    sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+fi
+
+# Для Debian/Ubuntu также создаем конфигурацию для apt
+if command -v apt-get >/dev/null; then
+    mkdir -p /etc/apt/apt.conf.d/
+    echo '
+DPkg::Options {
+   "--force-confdef";
+   "--force-confold";
+}
+' > /etc/apt/apt.conf.d/local
+fi
+
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+# Определение типа системы
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$NAME
+    VER=$VERSION_ID
+    echo "[System] Обнаружена система: $OS $VER"
+fi
+
+# Функция установки пакета
+install_package() {
+    package=$1
+    (
+        if command -v apt-get >/dev/null; then
+            apt-get update >/dev/null 2>&1 && apt-get install -y "$package" >/dev/null 2>&1
+        elif command -v dnf >/dev/null; then
+            dnf install -y "$package" >/dev/null 2>&1
+        elif command -v yum >/dev/null; then
+            yum install -y "$package" >/dev/null 2>&1
+        elif command -v zypper >/dev/null; then
+            zypper install -y "$package" >/dev/null 2>&1
+        elif command -v pacman >/dev/null; then
+            pacman -Sy --noconfirm "$package" >/dev/null 2>&1
+        else
+            return 1
+        fi
+    ) &
+    
+    show_spinner $! "[System] Установка $package"
+    return $?
+}
+
+# Установка базовых зависимостей
+echo "[System] Установка базовых зависимостей..."
+
+# Установка Git
 if ! command -v git >/dev/null; then
-    echo "[Git] Git not found. Attempting to install..."
-
-    if ! command -v apt-get >/dev/null; then
-        apt-get install -y git
-    elif ! command -v pacman >/dev/null; then
-        pacman -S --noconfirm git
-    elif ! command -v dnf >/dev/null; then
-        dnf install -y git
-    elif ! command -v zypper >/dev/null; then
-        zypper install -y git
-    else
-        echo "[Git] Failed to install Git. Please install it manually."
+    install_package git || {
+        echo "[Git] Ошибка установки Git"
         exit 1
-    fi
-    if [ $? -eq 0 ]; then
-        echo "[Git] Installation successful"
-    else
-        echo "[Git] Failed to install Git. Please install it manually."
-    fi
+    }
 else
-    echo "[Git] Installed"
+    printf "[System] Установка git \033[32m✓\033[0m\n"
 fi
 
-# Check for jq installation
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+# Установка jq
 if ! command -v jq >/dev/null; then
-    echo "[jq] jq not found. Attempting to install..."
-    if ! command -v apt-get >/dev/null; then
-        apt-get install -y jq
-    elif ! command -v pacman >/dev/null; then
-        pacman -S --noconfirm jq
-    elif ! command -v dnf >/dev/null; then
-        dnf install -y jq
-    elif ! command -v zypper >/dev/null; then
-        zypper install -y jq
-    else
-        echo "[Git] Failed to install Git. Please install it manually."
+    install_package jq || {
+        echo "[jq] Ошибка установки jq"
         exit 1
-    fi
-    if [ $? -eq 0 ]; then
-        echo "[jq] Installation successful"
-    else
-        echo "[jq] Failed to install jq. Please install it manually."
-    fi
+    }
 else
-    echo "[jq] Installed"
+    printf "[System] Установка jq \033[32m✓\033[0m\n"
 fi
 
-# Check for curl installation
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+# Установка curl
 if ! command -v curl >/dev/null; then
-    echo "[Curl] Curl not found. Attempting to install..."
-    if ! command -v apt-get >/dev/null; then
-        apt-get install -y curl
-    elif ! command -v pacman >/dev/null; then
-        pacman -S --noconfirm curl
-    elif ! command -v dnf >/dev/null; then
-        dnf install -y curl
-    elif ! command -v zypper >/dev/null; then
-        zypper install -y curl
-    else
-        echo "[Git] Failed to install Git. Please install it manually."
+    install_package curl || {
+        echo "[Curl] Ошибка установки Curl"
         exit 1
-    fi
-    if [ $? -eq 0 ]; then
-        echo "[Curl] Installation successful"
-    else
-        echo "[Curl] Failed to install Curl. Please install it manually."
-    fi
+    }
 else
-    echo "[Curl] Installed"
+    printf "[System] Установка curl \033[32m✓\033[0m\n"
 fi
 
-# Check for wget installation
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+# Установка wget
 if ! command -v wget >/dev/null; then
-    echo "[Wget] Wget not found. Attempting to install..."
-    if ! command -v apt-get >/dev/null; then
-        apt-get install -y wget
-    elif ! command -v pacman >/dev/null; then
-        pacman -S --noconfirm wget
-    elif ! command -v dnf >/dev/null; then
-        dnf install -y wget
-    elif ! command -v zypper >/dev/null; then
-        zypper install -y wget
-    else
-        echo "[Git] Failed to install Git. Please install it manually."
+    install_package wget || {
+        echo "[Wget] Ошибка установки Wget"
         exit 1
-    fi
-    if [ $? -eq 0 ]; then
-        echo "[Wget] Installation successful"
-    else
-        echo "[Wget] Failed to install Wget. Please install it manually."
-    fi
+    }
 else
-    echo "[Wget] Installed"
+    printf "[System] Установка wget \033[32m✓\033[0m\n"
 fi
 
-# Check for docker.io installation
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+# Установка Docker
+install_docker() {
+    (
+        if command -v apt-get >/dev/null; then
+            # Debian/Ubuntu
+            apt-get update >/dev/null 2>&1
+            apt-get install -y docker.io >/dev/null 2>&1
+        elif command -v dnf >/dev/null; then
+            # Fedora
+            dnf install -y docker >/dev/null 2>&1
+        elif command -v yum >/dev/null; then
+            # CentOS/RHEL
+            yum install -y docker >/dev/null 2>&1
+        elif command -v zypper >/dev/null; then
+            # OpenSUSE
+            zypper install -y docker >/dev/null 2>&1
+        elif command -v pacman >/dev/null; then
+            # Arch Linux
+            pacman -Sy --noconfirm docker >/dev/null 2>&1
+        else
+            return 1
+        fi
+
+        # Запуск и включение Docker
+        systemctl start docker >/dev/null 2>&1
+        systemctl enable docker >/dev/null 2>&1
+    ) &
+    
+    show_spinner $! "[System] Установка docker"
+    return $?
+}
+
+# Установка Docker если не установлен
 if ! command -v docker >/dev/null; then
-    echo "[Docker] Docker not found. Attempting to install..."
-    if ! command -v apt-get >/dev/null; then
-        apt-get install -y docker.io
-    elif ! command -v pacman >/dev/null; then
-        pacman -S --noconfirm docker
-    elif ! command -v dnf >/dev/null; then
-        dnf install -y docker
-    elif ! command -v zypper >/dev/null; then
-        zypper install -y docker
-    else
-        echo "[Docker] Failed to install Docker. Please install it manually."
+    install_docker || {
+        echo "[Docker] Ошибка установки Docker"
         exit 1
-    fi
-    if [ $? -eq 0 ]; then
-        echo "[Docker] Installation successful"
-    else
-        echo "[Docker] Failed to install Docker. Please install it manually."
-    fi
+    }
 else
-    echo "[Docker] Installed"
+    printf "[System] Установка docker \033[32m✓\033[0m\n"
 fi
 
-# Check for Docker Compose v2 or v1
-if command -v docker-compose >/dev/null; then
-    echo "[Docker-Compose] Docker Compose v1 is installed"
-    DOCKER_COMPOSE_CMD="docker-compose"
-elif command -v docker compose >/dev/null; then
-    echo "[Docker-Compose] Docker Compose v2 is installed"
-    DOCKER_COMPOSE_CMD="docker compose"
-else
-    echo "[Docker-Compose] Docker Compose not found. Attempting to install..."
-    DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-    mkdir -p $DOCKER_CONFIG/cli-plugins
-    curl -SL https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-    chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+# Установка Docker Compose
+if ! command -v docker-compose >/dev/null && ! command -v "docker compose" >/dev/null; then
+    (
+        DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+        mkdir -p $DOCKER_CONFIG/cli-plugins >/dev/null 2>&1
+        curl -SL "https://github.com/docker/compose/releases/download/v2.24.7/docker-compose-$(uname -s)-$(uname -m)" -o $DOCKER_CONFIG/cli-plugins/docker-compose >/dev/null 2>&1
+        chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose >/dev/null 2>&1
+    ) &
+    
+    show_spinner $! "[System] Установка docker-compose"
     if [ $? -eq 0 ]; then
-        echo "[Docker-Compose] Installation successful"
         DOCKER_COMPOSE_CMD="docker compose"
     else
-        echo "[Docker-Compose] Failed to install Docker Compose. Please install it manually."
+        echo "[System] Ошибка установки Docker Compose"
+        exit 1
+    fi
+else
+    if command -v docker-compose >/dev/null; then
+        printf "[System] Установка docker-compose \033[32m✓\033[0m\n"
+        DOCKER_COMPOSE_CMD="docker-compose"
+    else
+        printf "[System] Установка docker-compose \033[32m✓\033[0m\n"
+        DOCKER_COMPOSE_CMD="docker compose"
     fi
 fi
 
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
 # Загрузка docker-compose.yml
-wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-compose-prod.yml -O docker-compose.yml
+(wget https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend/master/docker-compose-prod.yml -O docker-compose.yml >/dev/null 2>&1) &
+show_spinner $! "[System] Загрузка конфигурации"
+
+CURRENT_STEP=$((CURRENT_STEP + 1))
 
 # Настройка
-
 ip_address=$(curl -s https://ipinfo.io/ip)
 if [ $? -ne 0 ]; then
     ip_address=$(hostname -I | awk '{print $1}')
 fi
 
 if [ -f .env ]; then
-    echo "[Gml] Файл .env существует. Использование локальной конфигурации..."
+    echo "[GML] Файл .env существует. Использование локальной конфигурации..."
 else
-    echo "[Gml] Файл .env не найден. Производится настройка...."
+    echo "[GML] Файл .env не найден. Производится настройка...."
 
     # Generate SECURITY_KEY
     security_key=$(openssl rand -hex 32)
     valid_project_name_regex="^[a-zA-Z_][a-zA-Z0-9_]*$"
     
-    echo "[Gml] Пожалуйста, введите наименование проекта:"
+    echo "[GML] Введите наименование проекта:"
     while true; do
         read project_name
         if echo "$project_name" | grep -Eq "$valid_project_name_regex"; then
             break
         else
-            echo "[Gml] Ошибка: Имя проекта должно начинаться с буквы или символа '_', и содержать только буквы, цифры или '_'. Пожалуйста, попробуйте еще раз:"
+            echo "[GML] Ошибка: Имя проекта должно начинаться с буквы или символа '_', и содержать только буквы, цифры или '_'"
+            echo "[GML] Попробуйте еще раз:"
         fi
     done
 
-    echo "[Gml] Корректное имя проекта получено: $project_name"
-
-
-    echo "[Gml] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
-    echo "[Gml] Aдрес по умолчанию: (http://$ip_address:5000), нажмите ENTER, чтобы установить его"
+    echo "[GML] Введите адрес к панели управления Gml, порт обязателен, если вы не используете проксирование"
+    echo "[GML] Aдрес по умолчанию: (http://$ip_address:5000), нажмите ENTER, чтобы установить его"
     read panel_url
 
     if [ -z "$panel_url" ]; then
         panel_url="http://$ip_address:5000"
     fi
 
-    echo "[Gml] Gml.Web.Api настроена на использование HTTP/S: $panel_url"
+    echo "[GML] Адрес панели: $panel_url"
 
     # Set PROJECT_POLICYNAME
     project_policyname=$(echo "$project_name" | tr -d '[:space:]')Policy
@@ -212,24 +275,40 @@ PORT_GML_SKINS=5006
 SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085" > .env
 
     rm -Rf ./frontend
-    git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./frontend/Gml.Web.Client
+    (git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./frontend/Gml.Web.Client >/dev/null 2>&1) &
+    show_spinner $! "[GML] Клонирование frontend"
 
     # Создание файла .env и запись в него переменных
     echo "NEXT_PUBLIC_BACKEND_URL=$panel_url/api/v1" > ./frontend/Gml.Web.Client/.env
-
 fi
 
 # Run
+(
+    $DOCKER_COMPOSE_CMD up -d --build > docker-build.log 2>&1
+) &
 
-$DOCKER_COMPOSE_CMD up -d --build
+show_spinner $! "[GML] Сборка контейнеров, ожидайте..."
+BUILD_SUCCESS=$?
 
-echo 
-echo 
-echo "\e[32m==================================================\e[0m"
-echo "\e[32mПроект успешно установлен:\e[0m"
-echo "\e[32m==================================================\e[0m"
+if [ $BUILD_SUCCESS -ne 0 ]; then
+    echo "[GML] Ошибка при сборке контейнеров"
+    echo "[GML] Лог ошибки:"
+    echo "----------------------------------------"
+    cat docker-build.log
+    echo "----------------------------------------"
+    rm -f docker-build.log
+    exit 1
+fi
+
+rm -f docker-build.log
+
+echo
+echo
+printf "\033[32m==================================================\033[0m\n"
+printf "\033[32mПроект успешно установлен:\033[0m\n"
+printf "\033[32m==================================================\033[0m\n"
 echo "Админпанель: http://$ip_address:5003/"
-echo "             *Небходима регистрация"
-echo "\033[31m=================================================="
+echo "             *Необходима регистрация"
+printf "\033[31m==================================================\n"
 echo "* Настоятельно советуем, в целях вашей безопасности, сменить данные для авторизации в панелях управления"
-echo "==================================================\033[0m"
+printf "==================================================\033[0m\n"
