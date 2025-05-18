@@ -49,7 +49,7 @@ IF EXIST .env (
     echo [Gml] Gml.Web.Api настроена на использование HTTP/S: %panel_url%
 
     :: Удаление пробелов из project_name для project_policyname
-    set "project_policyname=!project_name: =%Policy"
+    set "project_policyname=project_name:!project_name!Policy"
 
     (
         echo UID=0
