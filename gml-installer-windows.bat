@@ -6,6 +6,7 @@ chcp 65001 >nul
 where /q git
 if ERRORLEVEL 1 (
     echo [Git] Не найден. Установите его вручную.
+    pause
     exit /b 1
 ) else (
     echo [Git] Установлен
@@ -14,14 +15,32 @@ if ERRORLEVEL 1 (
 where /q docker
 if ERRORLEVEL 1 (
     echo [Docker] Не найден. Установите его вручную.
+    pause
     exit /b 1
 ) else (
     echo [Docker] Установлен
+    
+    :: Проверка состояния Docker
+    docker info >nul 2>&1
+    if ERRORLEVEL 1 (
+        echo [Docker] Обнаружена проблема с Docker:
+        echo [Docker] - Docker не запущен
+        echo [Docker] - Или служба Docker не запущена
+        echo [Docker] - Или у вас нет прав для подключения к Docker
+        echo [Docker] Пожалуйста, убедитесь, что:
+        echo [Docker] 1. Служба Docker Desktop запущена
+        echo [Docker] 2. У вас есть права администратора
+        pause
+        exit /b 1
+    ) else (
+        echo [Docker] Служба активна и работает
+    )
 )
 
 where /q docker-compose
 if ERRORLEVEL 1 (
     echo [Docker-Compose] Не найден. Установите его вручную.
+    pause
     exit /b 1
 ) else (
     echo [Docker-Compose] Установлен
