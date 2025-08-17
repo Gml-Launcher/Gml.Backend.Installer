@@ -72,7 +72,8 @@ echo "$content" > frontend/Gml.Web.Client/.env
 
 # Add NEXT_PUBLIC_MARKETPLACE_URL to frontend/Gml.Web.Client/.env
 if ! grep -q "^NEXT_PUBLIC_MARKETPLACE_URL=" ./frontend/Gml.Web.Client/.env 2>/dev/null; then
-    echo "NEXT_PUBLIC_MARKETPLACE_URL=https://gml-market.recloud.tech" >> ./frontend/Gml.Web.Client/.env
+    echo "NEXT_PUBLIC_MARKETPLACE_URL=https://gml-market.recloud.tech
+SWAGGER_ENABLED=true" >> ./frontend/Gml.Web.Client/.env
     echo "[Gml] Added NEXT_PUBLIC_MARKETPLACE_URL line to .env"
 fi
 
