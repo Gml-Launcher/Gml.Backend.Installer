@@ -65,6 +65,7 @@ IF EXIST .env (
         echo PORT_GML_FILES=5005
         echo PORT_GML_SKINS=5006
         echo SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085
+        echo MARKET_ENDPOINT=https://gml-market.recloud.tech
 
     ) > .env
 
@@ -73,6 +74,7 @@ IF EXIST .env (
 
     (
         echo NEXT_PUBLIC_BACKEND_URL=!panel_url!/api/v1
+        echo NEXT_PUBLIC_MARKETPLACE_URL=https://gml-market.recloud.tech
     ) > frontend/Gml.Web.Client/.env
 )
 

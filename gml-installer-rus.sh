@@ -272,14 +272,16 @@ PORT_GML_FRONTEND=5003
 PORT_GML_FILES=5005
 PORT_GML_SKINS=5006
 
-SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085" > .env
+SERVICE_TEXTURE_ENDPOINT=http://gml-web-skins:8085
+MARKET_ENDPOINT=https://gml-market.recloud.tech" > .env
 
     rm -Rf ./frontend
     (git clone --single-branch https://github.com/Gml-Launcher/Gml.Web.Client.git ./frontend/Gml.Web.Client >/dev/null 2>&1) &
     show_spinner $! "[GML] Клонирование frontend"
 
     # Создание файла .env и запись в него переменных
-    echo "NEXT_PUBLIC_BACKEND_URL=$panel_url/api/v1" > ./frontend/Gml.Web.Client/.env
+    echo "NEXT_PUBLIC_BACKEND_URL=$panel_url/api/v1
+NEXT_PUBLIC_MARKETPLACE_URL=https://gml-market.recloud.tech" > ./frontend/Gml.Web.Client/.env
 fi
 
 # Run
