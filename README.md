@@ -7,7 +7,7 @@
 Для установки Gml.Backend выполните следующие команды в удобной для вас директории (для работы скрипта необходим `curl`, [инструкция по установке curl](https://losst.pro/ustanovka-curl-v-ubuntu)):
 
 ```sh
-curl -O https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/intaller.sh
+curl -O https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/installer.sh
 chmod +x ./intaller.sh
 ./intaller.sh --version v2025.2
 ```
@@ -17,7 +17,7 @@ chmod +x ./intaller.sh
 Для обновления Gml.Backend выполните следующую команду в директории, где находятся файлы `docker-compose.yml` и `.env`:
 
 ```sh
-curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/updater.sh --version v2025.2 | sh
+curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/deleted.sh --version v2025.2 | sh
 ```
 
 ## Удаление
@@ -25,7 +25,7 @@ curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/mas
 Для удаления Gml.Backend выполните следующую команду в директории, где находятся файлы `docker-compose.yml` и `.env`:
 
 ```sh
-curl -s https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/deleted.sh | sh
+curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh | sh
 ```
 
 ## Преимущества
