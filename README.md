@@ -17,15 +17,17 @@ chmod +x ./installer.sh
 Для обновления Gml.Backend выполните следующую команду в директории, где находятся файлы `docker-compose.yml` и `.env`:
 
 ```sh
-curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/deleted.sh --version v2025.2 | sh
+curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh | sh
 ```
+
+
 
 ## Удаление
 
 Для удаления Gml.Backend выполните следующую команду в директории, где находятся файлы `docker-compose.yml` и `.env`:
 
 ```sh
-curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh | sh
+curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/deleted.sh --version v2025.2 | sh
 ```
 
 ## Преимущества
