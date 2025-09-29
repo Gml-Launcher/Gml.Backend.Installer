@@ -8,8 +8,8 @@
 
 ```sh
 curl -O https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/installer.sh
-chmod +x ./intaller.sh
-./intaller.sh --version v2025.2
+chmod +x ./installer.sh
+./installer.sh --version v2025.2
 ```
 
 ## Обновление
