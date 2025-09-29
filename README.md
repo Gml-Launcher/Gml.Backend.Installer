@@ -18,6 +18,8 @@ chmod +x ./installer.sh
 
 ```sh
 curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh --version v2025.2 | sh
+chmod +x ./updater.sh
+./updater.sh --version v2025.2
 ```
 
 
