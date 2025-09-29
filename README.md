@@ -17,7 +17,7 @@ chmod +x ./installer.sh
 Для обновления Gml.Backend выполните следующую команду в директории, где находятся файлы `docker-compose.yml` и `.env`:
 
 ```sh
-curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh | sh
+curl -s https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh
 chmod +x ./updater.sh
 ./updater.sh --version v2025.2
 ```
