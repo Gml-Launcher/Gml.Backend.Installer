@@ -9,7 +9,7 @@
 ```sh
 curl -O https://raw.githubusercontent.com/GamerVII-NET/Gml.Backend.Installer/master/intaller.sh
 chmod +x ./intaller.sh
-./intaller.sh.sh --version v2025.2
+./intaller.sh --version v2025.2
 ```
 
 ## Обновление
