@@ -9,7 +9,7 @@
 ```sh
 curl -O https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/installer.sh
 chmod +x ./installer.sh
-./installer.sh --version v2025.2.1
+./installer.sh --version v2025.3
 ```
 
 ## Обновление
@@ -19,7 +19,7 @@ chmod +x ./installer.sh
 ```sh
 curl -O https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend.Installer/refs/heads/master/updater.sh
 chmod +x ./updater.sh
-./updater.sh --version v2025.2.1
+./updater.sh --version v2025.3
 ```
 
 
