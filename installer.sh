@@ -116,21 +116,15 @@ install_package() {
 install_docker() {
     (
         if ! command -v docker >/dev/null; then
-            for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-                apt-get remove -y $pkg >/dev/null 2>&1
-            done
-            apt-get update >/dev/null 2>&1
-            apt-get install -y ca-certificates curl >/dev/null 2>&1
-            install -m 0755 -d /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-            chmod a+r /etc/apt/keyrings/docker.asc
+            # Install Docker using the official convenience script
+            sh -c "$(curl -fsSL https://get.docker.com)" >/dev/null 2>&1
 
-            echo \
-              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-              $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-            tee /etc/apt/sources.list.d/docker.list >/dev/null
-            apt-get update >/dev/null 2>&1
-            apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin >/dev/null 2>&1
+            # Start and enable Docker service if available
+            if command -v systemctl >/dev/null; then
+                systemctl enable --now docker >/dev/null 2>&1 || true
+            else
+                service docker start >/dev/null 2>&1 || true
+            fi
         fi
     ) &
     show_spinner $! "[Gml] Установка Docker" 1
@@ -148,6 +142,20 @@ install_git() {
         fi
     ) &
     show_spinner $! "[Gml] Установка Git" 1
+    return $?
+}
+
+# Install Curl
+install_curl() {
+    (
+        if ! command -v curl >/dev/null; then
+            install_package curl || {
+                echo "[Gml] Ошибка установки Curl"
+                exit 1
+            }
+        fi
+    ) &
+    show_spinner $! "[Gml] Установка Curl" 1
     return $?
 }
 
@@ -197,6 +205,7 @@ EOF
 install_packages() {
     step=$1
     (
+        install_curl
         install_docker
         install_git
     ) &
