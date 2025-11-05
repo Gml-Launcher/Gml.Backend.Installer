@@ -131,17 +131,17 @@ install_docker() {
     return $?
 }
 
-# Install Git
-install_git() {
+# Install Curl
+install_curl() {
     (
-        if ! command -v git >/dev/null; then
-            install_package git || {
-                echo "[Gml] Ошибка установки Git"
+        if ! command -v curl >/dev/null; then
+            install_package curl || {
+                echo "[Gml] Ошибка установки Curl"
                 exit 1
             }
         fi
     ) &
-    show_spinner $! "[Gml] Установка Git" 1
+    show_spinner $! "[Gml] Установка Curl" 1
     return $?
 }
 
@@ -166,7 +166,7 @@ download_project() {
         cd "$BASE_DIR" || exit
 
         # Download docker-compose file
-        wget "https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/tags/$VERSION/docker-compose-prod.yml" -O docker-compose.yml >/dev/null 2>&1
+        curl -fsSL "https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/tags/$VERSION/docker-compose-prod.yml" -o docker-compose.yml >/dev/null 2>&1
 
         # Replace :master with :$VERSION in docker-compose.yml
         sed -i "s/:master/:$VERSION/g" docker-compose.yml
@@ -207,7 +207,6 @@ install_packages() {
     (
         install_curl
         install_docker
-        install_git
     ) &
     show_spinner $! "[Gml] Установка пакетов $step"
     return $?
