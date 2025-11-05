@@ -131,20 +131,6 @@ install_docker() {
     return $?
 }
 
-# Install Git
-install_git() {
-    (
-        if ! command -v git >/dev/null; then
-            install_package git || {
-                echo "[Gml] Ошибка установки Git"
-                exit 1
-            }
-        fi
-    ) &
-    show_spinner $! "[Gml] Установка Git" 1
-    return $?
-}
-
 # Install Curl
 install_curl() {
     (
@@ -207,7 +193,6 @@ install_packages() {
     (
         install_curl
         install_docker
-        install_git
     ) &
     show_spinner $! "[Gml] Установка пакетов $step"
     return $?
