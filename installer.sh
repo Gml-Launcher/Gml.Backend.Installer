@@ -152,7 +152,7 @@ download_project() {
         cd "$BASE_DIR" || exit
 
         # Download docker-compose file
-        wget "https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/tags/$VERSION/docker-compose-prod.yml" -O docker-compose.yml >/dev/null 2>&1
+        curl -fsSL "https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/tags/$VERSION/docker-compose-prod.yml" -o docker-compose.yml >/dev/null 2>&1
 
         # Replace :master with :$VERSION in docker-compose.yml
         sed -i "s/:master/:$VERSION/g" docker-compose.yml
