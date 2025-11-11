@@ -223,13 +223,30 @@ startup() {
 }
 
 write_message() {
-    local server_ip=$(echo $SSH_CONNECTION | awk '{print $3}') # Извлекаем IP сервера
+    local port=5003
+    # Собираем все IPv4 адреса хоста (исключая loopback и docker-виртуальные)
+    local ip_list=""
+    if command -v ip >/dev/null 2>&1; then
+        ip_list="$(ip -4 -o addr show up | awk '!/ lo / && !/docker|br-|veth/ {print $4}' | cut -d/ -f1 | sort -u)"
+    else
+        ip_list="$(hostname -I 2>/dev/null | xargs)"
+    fi
+
+    # Фолбэк на IP из SSH-сессии, если список пуст
+    if [ -z "$ip_list" ]; then
+        ip_list="$(echo $SSH_CONNECTION | awk '{print $3}')"
+    fi
+
     echo
     echo
     printf "\033[32m==================================================\033[0m\n"
     printf "\033[32mПроект успешно установлен:\033[0m\n"
     printf "\033[32m==================================================\033[0m\n"
-    echo "Админпанель: http://$server_ip:5003/"
+
+    echo "Админпанель:"
+    for ip in $ip_list; do
+        [ -n "$ip" ] && echo " - http://$ip:$port/"
+    done
 }
 
 # Main script execution
