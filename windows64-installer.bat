@@ -9,7 +9,7 @@ if %errorlevel% neq 0 (
 )
 
 set BASE_DIR=%~dp0
-set VERSION=v2025.2
+set VERSION=v2025.3.3.2
 
 :: Parse arguments
 :parse_args
