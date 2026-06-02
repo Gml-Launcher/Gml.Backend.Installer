@@ -145,20 +145,6 @@ install_curl() {
     return $?
 }
 
-# Install Curl
-install_curl() {
-    (
-        if ! command -v curl >/dev/null; then
-            install_package curl || {
-                echo "[Gml] Ошибка установки Curl"
-                exit 1
-            }
-        fi
-    ) &
-    show_spinner $! "[Gml] Установка Curl" 1
-    return $?
-}
-
 # Download and configure the project
 download_project() {
     (
@@ -256,4 +242,3 @@ install_packages
 download_project
 startup
 write_message
-
