@@ -35,12 +35,13 @@ mkdir -p "$BASE_DIR"
 show_spinner() {
     local pid=$1
     local text=$2
-    local level=${3:-0} # Default level is 0 if not provided
+    local level=${3:-0}
     local spinstr='/-\|'
     local delay=0.1
-    local indent=$(printf "%*s" $((level * 2)) "") # Indentation based on level
+    local indent=$(printf "%*s" $((level * 2)) "")
 
-    while kill -0 $pid 2>/dev/null; do
+    # Более надежная проверка существования PID в Linux
+    while [ -d "/proc/$pid" ]; do
         for char in $spinstr; do
             printf "\r%s%s %c" "$indent" "$text" "$char"
             sleep $delay
