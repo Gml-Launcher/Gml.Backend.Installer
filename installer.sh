@@ -33,30 +33,30 @@ mkdir -p "$BASE_DIR"
 
 # Function to display a spinner with support for nested tasks
 show_spinner() {
-    local pid=$1
-    local text=$2
-    local level=${3:-0} # Default level is 0 if not provided
-    local spinstr='/-\|'
+    local pid="$1"
+    local text="$2"
+    local level="${3:-0}" # Default level is 0 if not provided
     local delay=0.1
     local indent=$(printf "%*s" $((level * 2)) "") # Indentation based on level
 
     while kill -0 $pid 2>/dev/null; do
         for char in $spinstr; do
             printf "\r%s%s %c" "$indent" "$text" "$char"
-            sleep $delay
+            sleep "$delay"
         done
     done
 
-    wait $pid
-    local result=$?
+    wait "$pid"
+    local result="$?"
 
-    if [ $result -eq 0 ]; then
+
+    if [ "$result" -eq 0 ]; then
         printf "\r%s%s \033[32m✓\033[0m\n" "$indent" "$text"
     else
         printf "\r%s%s \033[31m✗\033[0m\n" "$indent" "$text"
     fi
 
-    return $result
+    return "$result"
 }
 
 # Disable additional notifications
