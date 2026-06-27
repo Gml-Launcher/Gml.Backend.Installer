@@ -37,18 +37,25 @@ show_spinner() {
     local text="$2"
     local level="${3:-0}" # Default level is 0 if not provided
     local delay=0.1
-    local indent=$(printf "%*s" $((level * 2)) "") # Indentation based on level
+    local indent
 
-    while kill -0 $pid 2>/dev/null; do
-        for char in $spinstr; do
-            printf "\r%s%s %c" "$indent" "$text" "$char"
-            sleep "$delay"
+    indent=$(printf "%*s" $((level * 2)) "") # Indentation based on level
+
+    (
+        while :; do
+            for char in "/" "-" "\\" "|"; do
+                printf "\r%s%s %s" "$indent" "$text" "$char"
+                sleep "$delay"
+            done
         done
-    done
+    ) &
+    local spinner_pid="$!"
 
     wait "$pid"
     local result="$?"
 
+    kill "$spinner_pid" 2>/dev/null || true
+    wait "$spinner_pid" 2>/dev/null || true
 
     if [ "$result" -eq 0 ]; then
         printf "\r%s%s \033[32m✓\033[0m\n" "$indent" "$text"
