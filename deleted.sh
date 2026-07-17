@@ -1,5 +1,51 @@
 #!/bin/sh
 
+NEW_MANAGER_URL="https://raw.githubusercontent.com/Gml-Launcher/Gml.Backend/refs/heads/master/installer/gml-manager.sh"
+
+offer_new_manager() {
+    printf '%s\n' \
+        "==================================================" \
+        "ВНИМАНИЕ: этот скрипт устарел и больше не поддерживается." \
+        "Рекомендуем использовать новый Gml Manager:" \
+        "https://github.com/Gml-Launcher/Gml.Backend" \
+        "==================================================" >&2
+
+    answer=""
+    if [ -r /dev/tty ] && ( : </dev/tty ) 2>/dev/null; then
+        printf "Запустить новый Gml Manager сейчас? [Y/n]: " >/dev/tty
+        IFS= read -r answer </dev/tty || answer=""
+    elif [ -t 0 ]; then
+        printf "Запустить новый Gml Manager сейчас? [Y/n]: " >&2
+        IFS= read -r answer || answer=""
+    else
+        printf '%s\n' "Интерактивный ввод недоступен; выбран ответ по умолчанию: да." >&2
+    fi
+
+    case "$answer" in
+        n|N|no|NO|No|н|Н|нет|Нет|НЕТ)
+            printf '%s\n' "Продолжаем запуск устаревшего скрипта." >&2
+            return
+            ;;
+    esac
+
+    if ! command -v curl >/dev/null 2>&1; then
+        printf '%s\n' "Ошибка: для запуска нового Gml Manager требуется curl." >&2
+        exit 1
+    fi
+
+    if [ "$(id -u)" -eq 0 ]; then
+        curl -fsSL "$NEW_MANAGER_URL" | sh
+    elif command -v sudo >/dev/null 2>&1; then
+        curl -fsSL "$NEW_MANAGER_URL" | sudo sh
+    else
+        printf '%s\n' "Ошибка: запустите скрипт от root или установите sudo." >&2
+        exit 1
+    fi
+    exit $?
+}
+
+offer_new_manager
+
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root"
     exit 1
@@ -155,4 +201,3 @@ prepare_os
 install_packages
 startup
 write_message
-

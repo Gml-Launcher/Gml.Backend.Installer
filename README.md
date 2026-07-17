@@ -1,3 +1,8 @@
+> [!WARNING]
+> Linux-скрипты `installer.sh`, `updater.sh` и `deleted.sh` устарели и больше не поддерживаются. Для установки, обновления и удаления Gml.Backend на Linux используйте новый [Gml Manager](https://github.com/Gml-Launcher/Gml.Backend#quick-install-with-gml-manager).
+>
+> Windows-версия [`windows64-installer.bat`](./windows64-installer.bat) в этом репозитории остаётся актуальной.
+
 # Описание репозитория
 
 Этот репозиторий содержит скрипты для установки, обновления и удаления Gml.Backend. Скрипты упрощают процесс управления серверной частью Gml, обеспечивая легкость и удобство выполнения необходимых операций. 
